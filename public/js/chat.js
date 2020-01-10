@@ -7,15 +7,13 @@ const $messages = document.querySelector('#messages')
 
 
 //templates
-
+const messageTemplate = document.querySelector('#message-template').innerHTML
+const locationTemplate = document.querySelector('#location-message-template').innerHTML
+const sidebarTemplate = document.querySelector('#sidebar-template').innerHTML
 
 //options
 const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true })
 
-
-const messageTemplate = document.querySelector('#message-template').innerHTML
-const locationTemplate = document.querySelector('#location-message-template').innerHTML
-const sidebarTemplate = document.querySelector('#sidebar-template').innerHTML
 // socket.on('countUpdated', (count) => {
 //     console.log('The count has been updated!', count)
 // })
@@ -43,23 +41,23 @@ const autoScroll = () => {
     }
 }
 
-
-socket.on('locationMessage', (url) => {
-    const html = Mustache.render(locationTemplate, {
-        username: url.username,
-        url: url.url,
-        createdAt: moment(URL.createdAt).format('h:mm a')
-    })
-    $messages.insertAdjacentHTML('beforeend', html)
-    autoScroll()
-})
-
 socket.on('message', (message) => {
     console.log(message)
     const html = Mustache.render(messageTemplate, {
         username: message.username,
         message : message.text,
         createdAt: moment(message.createdAt).format('h:mm a')
+    })
+    $messages.insertAdjacentHTML('beforeend', html)
+    autoScroll()
+})
+
+socket.on('locationMessage', (url) => {
+    console.log(url)
+    const html = Mustache.render(locationTemplate, {
+        username: url.username,
+        url: url.url,
+        createdAt: moment(URL.createdAt).format('h:mm a')
     })
     $messages.insertAdjacentHTML('beforeend', html)
     autoScroll()
